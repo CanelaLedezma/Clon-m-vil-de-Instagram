@@ -14,6 +14,11 @@ function Inicio({ navigation }) {
       >
         <Text style={estilos.textoBoton}>Ir al perfil</Text>
       </Pressable>
+      <Pressable
+    style={estilos.boton}
+    onPress={() => navigation.navigate('DetallePublicacion')}>
+    <Text style={estilos.textoBoton}>Ir al detalle</Text>
+  </Pressable>
     </SafeAreaView>
   );
 }
