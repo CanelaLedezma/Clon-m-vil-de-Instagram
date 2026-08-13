@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
-import Inicio from './app/pantallas/Inicio';
+import NavegacionPrincipal from './app/NavegacionPrincipal';
 
 export default function App() {
   return (
     <>
-      <Inicio />
+      <NavegacionPrincipal />
       <StatusBar style="dark" />
     </>
   );
