@@ -1,35 +1,38 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet, Text, FlatList } from 'react-native';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 import Publicacion from '../componentes/Publicacion';
 
-// Datos de prueba para comprobar el funcionamiento del feed.
-// Más adelante estas imágenes van a venir de la API.
-const publicaciones = [
-  {
-    id: '1',
-    usuario: 'canela',
-    ubicacion: 'Buenos Aires',
-    imagen: 'https://placecats.com/500/500',
-    descripcion: 'Primera publicación',
-  },
-  {
-    id: '2',
-    usuario: 'maria',
-    ubicacion: 'CABA',
-    imagen: 'https://placecats.com/501/501',
-    descripcion: 'Segunda publicación',
-  },
-  {
-    id: '3',
-    usuario: 'lucia',
-    ubicacion: 'Argentina',
-    imagen: 'https://placecats.com/502/502',
-    descripcion: 'Tercera publicación',
-  },
-];
-
 function Inicio() {
+
+  // Guarda las publicaciones que se van a mostrar en el feed
+  const [publicaciones, setPublicaciones] = useState([]);
+
+  // Se ejecuta una sola vez cuando se carga la pantalla
+  useEffect(() => {
+
+    // Pide 10 imágenes de gatos a la API
+    axios
+      .get('https://api.thecatapi.com/v1/images/search?limit=10')
+      .then((respuesta) => {
+
+        // Adapta los datos de la API al formato que usa Publicacion
+        const publicacionesApi = respuesta.data.map((gato, indice) => ({
+          id: gato.id,
+          usuario: `usuario${indice + 1}`,
+          ubicacion: 'Buenos Aires',
+          imagen: gato.url,
+          descripcion: `Publicación ${indice + 1}`,
+        }));
+
+        // Guarda las publicaciones para que FlatList las muestre
+        setPublicaciones(publicacionesApi);
+      });
+
+  }, []);
+
   return (
     <SafeAreaView style={estilos.contenedor}>
 
@@ -64,7 +67,7 @@ const estilos = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
 
-  // Altura temporal para comprobar el scroll en web
+  // Altura temporal para poder probar el scroll desde la versión web
   lista: {
     height: 500,
   },
