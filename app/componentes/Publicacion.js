@@ -1,9 +1,35 @@
 import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
+import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 // Este componente representa una publicación del feed.
 // Recibe por props los datos que cambian en cada publicación.
 function Publicacion({ usuario, ubicacion, imagen, descripcion }) {
+
+  // Guarda si esta publicación tiene Me gusta o no.
+  // Empieza en false porque al principio el corazón está vacío.
+  const [meGusta, setMeGusta] = useState(false);
+
+  // Guarda la cantidad de Me gusta de esta publicación.
+  const [cantidadLikes, setCantidadLikes] = useState(120);
+
+  // Cambia el estado del Me gusta cada vez que se toca el corazón.
+  function cambiarMeGusta() {
+
+    // Si todavía no tenía Me gusta, suma uno.
+    if (!meGusta) {
+      setCantidadLikes(cantidadLikes + 1);
+    }
+
+    // Si ya tenía Me gusta, resta uno.
+    else {
+      setCantidadLikes(cantidadLikes - 1);
+    }
+
+    // Cambia entre true y false.
+    setMeGusta(!meGusta);
+  }
+
   return (
     // Contenedor principal de toda la publicación
     <View style={estilos.publicacion}>
@@ -44,12 +70,19 @@ function Publicacion({ usuario, ubicacion, imagen, descripcion }) {
         {/* Agrupa los botones de Me gusta, comentar y compartir */}
         <View style={estilos.accionesIzquierda}>
 
-          {/* Botón visual de Me gusta */}
-          <Pressable style={estilos.botonAccion}>
+          {/* Al tocarlo ejecuta la función cambiarMeGusta */}
+          <Pressable
+            style={estilos.botonAccion}
+            onPress={cambiarMeGusta}
+          >
             <Ionicons
-              name="heart-outline"
+              // Si meGusta es true muestra el corazón lleno.
+              // Si es false muestra el corazón vacío.
+              name={meGusta ? 'heart' : 'heart-outline'}
               size={28}
-              color="black"
+
+              // El corazón lleno se muestra rojo.
+              color={meGusta ? 'red' : 'black'}
             />
           </Pressable>
 
@@ -84,9 +117,9 @@ function Publicacion({ usuario, ubicacion, imagen, descripcion }) {
 
       </View>
 
-      {/* Muestra una cantidad de Me gusta simulada */}
+      {/* Muestra la cantidad actual de Me gusta */}
       <Text style={estilos.likes}>
-        120 Me gusta
+        {cantidadLikes} Me gusta
       </Text>
 
       {/* Muestra el nombre del usuario y la descripción */}
@@ -139,10 +172,13 @@ const estilos = StyleSheet.create({
     marginTop: 1,
   },
 
-imagen: {
-  width: '100%',
-  aspectRatio: 1, // Mantiene la proporción cuadrada: ancho y alto quedan iguales
-},
+  imagen: {
+    width: '100%',
+
+    // Mantiene la proporción cuadrada:
+    // el ancho y el alto quedan iguales
+    aspectRatio: 1,
+  },
 
   barraAcciones: {
     // Coloca las acciones a la izquierda
