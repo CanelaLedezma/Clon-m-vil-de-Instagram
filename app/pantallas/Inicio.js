@@ -41,9 +41,11 @@ function Inicio({ navigation }) {
       {/* Lista de publicaciones del feed */}
       <FlatList
         style={estilos.lista}
+
+        // Lista de datos que va a recorrer
         data={publicaciones}
 
-        // Por cada elemento crea un componente Publicacion
+        // Define qué se muestra por cada publicación
         renderItem={({ item }) => (
           <Publicacion
             usuario={item.usuario}
@@ -51,8 +53,7 @@ function Inicio({ navigation }) {
             imagen={item.imagen}
             descripcion={item.descripcion}
 
-            // Al tocar la publicación navega al detalle
-            // y envía todos los datos de esa publicación
+            // Abre el detalle enviando los datos de esta publicación
             abrirDetalle={() =>
               navigation.navigate('DetallePublicacion', {
                 publicacion: item,
@@ -61,7 +62,7 @@ function Inicio({ navigation }) {
           />
         )}
 
-        // Identificador único de cada publicación
+        // Usa el id para identificar cada publicación
         keyExtractor={(item) => item.id}
       />
 

@@ -1,41 +1,94 @@
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import Inicio from './pantallas/Inicio';
 import DetallePublicacion from './pantallas/DetallePublicacion';
 import Perfil from './pantallas/Perfil';
 
-// Crea el Stack que va a contener las distintas pantallas
+// Stack: se usa para entrar a pantallas más profundas,
+// como el detalle de una publicación.
 const Stack = createStackNavigator();
+
+// Tabs: se usa para las secciones principales,
+// como Inicio y Perfil.
+const Tab = createBottomTabNavigator();
+
+// Navegación inferior principal de la aplicación
+function PestañasPrincipales() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        // Define el icono que aparece en cada pestaña
+        tabBarIcon: ({ color, size }) => {
+          let nombreIcono;
+
+          if (route.name === 'Inicio') {
+            nombreIcono = 'home-outline';
+          }
+
+          if (route.name === 'Perfil') {
+            nombreIcono = 'person-circle-outline';
+          }
+
+          return (
+            <Ionicons
+              name={nombreIcono}
+              size={size}
+              color={color}
+            />
+          );
+        },
+
+        // Colores de la barra inferior
+        tabBarActiveTintColor: 'black',
+        tabBarInactiveTintColor: 'gray',
+
+        // Oculta el texto para que quede más parecido a Instagram
+        tabBarShowLabel: false,
+      })}
+    >
+      {/* Sección principal del feed */}
+      <Tab.Screen
+        name="Inicio"
+        component={Inicio}
+      />
+
+      {/* Sección principal del perfil */}
+      <Tab.Screen
+        name="Perfil"
+        component={Perfil}
+      />
+
+    </Tab.Navigator>
+  );
+}
 
 function NavegacionPrincipal() {
   return (
     // Envuelve toda la navegación de la aplicación
     <NavigationContainer>
 
-      {/* Contiene las pantallas registradas dentro del Stack */}
       <Stack.Navigator>
 
-        {/* Registra la pantalla de Inicio */}
+        {/* Contiene las pestañas principales de Inicio y Perfil */}
         <Stack.Screen
-          name="Inicio"
-          component={Inicio}
+          name="Principal"
+          component={PestañasPrincipales}
+          options={{
+            headerShown: false,
+          }}
         />
 
-        {/* Registra la pantalla de detalle de una publicación */}
+        {/* El detalle queda fuera de las Tabs porque es una pantalla interna */}
         <Stack.Screen
           name="DetallePublicacion"
           component={DetallePublicacion}
         />
 
-        {/* Registra la pantalla de Perfil */}
-        <Stack.Screen
-          name="Perfil"
-          component={Perfil}
-        />
-
       </Stack.Navigator>
+
     </NavigationContainer>
   );
 }
