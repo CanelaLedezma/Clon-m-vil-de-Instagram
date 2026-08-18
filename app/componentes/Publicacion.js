@@ -4,7 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 // Este componente representa una publicación del feed.
 // Recibe por props los datos que cambian en cada publicación.
-function Publicacion({ usuario, ubicacion, imagen, descripcion }) {
+function Publicacion({ usuario, ubicacion, imagen, descripcion, abrirDetalle }) {
 
   // Guarda si esta publicación tiene Me gusta o no.
   // Empieza en false porque al principio el corazón está vacío.
@@ -58,12 +58,14 @@ function Publicacion({ usuario, ubicacion, imagen, descripcion }) {
 
       </View>
 
-      {/* Muestra la imagen principal de la publicación */}
-      <Image
-        source={{ uri: imagen }}
-        style={estilos.imagen}
-      />
-
+      {/* Al tocar la imagen abre la pantalla de detalle */}
+      <Pressable onPress={abrirDetalle}>
+        <Image
+          source={{ uri: imagen }}
+          style={estilos.imagen}
+        />
+      </Pressable>
+      
       {/* Barra que contiene las acciones de la publicación */}
       <View style={estilos.barraAcciones}>
 

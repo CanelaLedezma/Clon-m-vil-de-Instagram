@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import Publicacion from '../componentes/Publicacion';
 
-function Inicio() {
+function Inicio({ navigation }) {
 
   // Guarda las publicaciones que se van a mostrar en el feed
   const [publicaciones, setPublicaciones] = useState([]);
@@ -50,6 +50,14 @@ function Inicio() {
             ubicacion={item.ubicacion}
             imagen={item.imagen}
             descripcion={item.descripcion}
+
+            // Al tocar la publicación navega al detalle
+            // y envía todos los datos de esa publicación
+            abrirDetalle={() =>
+              navigation.navigate('DetallePublicacion', {
+                publicacion: item,
+              })
+            }
           />
         )}
 
