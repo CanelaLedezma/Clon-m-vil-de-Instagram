@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import { View } from 'react-native';
 import Inicio from './pantallas/Inicio';
 import DetallePublicacion from './pantallas/DetallePublicacion';
 import Perfil from './pantallas/Perfil';
@@ -49,11 +49,32 @@ function PestañasPrincipales() {
         tabBarShowLabel: false,
       })}
     >
-      {/* Sección principal del feed */}
-      <Tab.Screen
-        name="Inicio"
-        component={Inicio}
-      />
+ <Tab.Screen
+  name="Inicio"
+  component={Inicio}
+  options={{
+    // Cambia el título del header nativo
+    headerTitle: 'Instagram',
+
+    // Coloca iconos a la derecha del header
+    headerRight: () => (
+      <View style={{ flexDirection: 'row', marginRight: 15 }}>
+        <Ionicons
+          name="heart-outline"
+          size={26}
+          color="black"
+          style={{ marginRight: 18 }}
+        />
+
+        <Ionicons
+          name="paper-plane-outline"
+          size={25}
+          color="black"
+        />
+      </View>
+    ),
+  }}
+/>
 
       {/* Sección principal del perfil */}
       <Tab.Screen

@@ -1,8 +1,8 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, Text, FlatList, View } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { StyleSheet, FlatList } from 'react-native';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Historias from '../componentes/Historias';
 
 
 import Publicacion from '../componentes/Publicacion';
@@ -38,24 +38,6 @@ function Inicio({ navigation }) {
   return (
     <SafeAreaView style={estilos.contenedor}>
 
-      {/* Encabezado superior inspirado en Instagram */}
-<View style={estilos.encabezadoSuperior}>
-  <Text style={estilos.logo}>Instagram</Text>
-
-  <View style={estilos.iconosEncabezado}>
-    <Ionicons
-      name="heart-outline"
-      size={26}
-      color="black"
-    />
-
-    <Ionicons
-      name="paper-plane-outline"
-      size={25}
-      color="black"
-    />
-  </View>
-</View>
 
       {/* Lista de publicaciones del feed */}
       <FlatList
@@ -99,23 +81,7 @@ const estilos = StyleSheet.create({
   lista: {
     height: 500,
   },
-encabezadoSuperior: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  paddingHorizontal: 14,
-  paddingVertical: 10,
-},
 
-logo: {
-  fontSize: 25,
-  fontWeight: 'bold',
-},
-
-iconosEncabezado: {
-  flexDirection: 'row',
-  gap: 18,
-},
 });
 
 export default Inicio;
