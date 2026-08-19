@@ -18,6 +18,8 @@ const Tab = createBottomTabNavigator();
 function PestañasPrincipales({
   publicacionesConLike,
   cambiarLike,
+  publicacionesGuardadas,
+  cambiarGuardado,
 }) {
   return (
     <Tab.Navigator
@@ -109,6 +111,8 @@ function PestañasPrincipales({
             {...props}
             publicacionesConLike={publicacionesConLike}
             cambiarLike={cambiarLike}
+            publicacionesGuardadas={publicacionesGuardadas}
+            cambiarGuardado={cambiarGuardado}
           />
         )}
       </Tab.Screen>
@@ -140,6 +144,8 @@ function PestañasPrincipales({
             {...props}
             publicacionesConLike={publicacionesConLike}
             cambiarLike={cambiarLike}
+            publicacionesGuardadas={publicacionesGuardadas}
+            cambiarGuardado={cambiarGuardado}
           />
         )}
       </Tab.Screen>
@@ -155,8 +161,11 @@ function PestañasPrincipales({
 
 function NavegacionPrincipal() {
 
-  // Estado compartido por Inicio, Likes y Detalle
+  // Publicaciones que tienen Me gusta
   const [publicacionesConLike, setPublicacionesConLike] = useState([]);
+
+  // Publicaciones guardadas
+  const [publicacionesGuardadas, setPublicacionesGuardadas] = useState([]);
 
   // Agrega o quita una publicación de Likes
   const cambiarLike = (publicacion) => {
@@ -179,6 +188,27 @@ function NavegacionPrincipal() {
     }
   };
 
+  // Agrega o quita una publicación de Guardados
+  const cambiarGuardado = (publicacion) => {
+
+    const yaEstaGuardada = publicacionesGuardadas.some(
+      (item) => item.id === publicacion.id
+    );
+
+    if (yaEstaGuardada) {
+      setPublicacionesGuardadas(
+        publicacionesGuardadas.filter(
+          (item) => item.id !== publicacion.id
+        )
+      );
+    } else {
+      setPublicacionesGuardadas([
+        ...publicacionesGuardadas,
+        publicacion,
+      ]);
+    }
+  };
+
   return (
     <NavigationContainer>
 
@@ -195,6 +225,8 @@ function NavegacionPrincipal() {
               {...props}
               publicacionesConLike={publicacionesConLike}
               cambiarLike={cambiarLike}
+              publicacionesGuardadas={publicacionesGuardadas}
+              cambiarGuardado={cambiarGuardado}
             />
           )}
         </Stack.Screen>
@@ -207,6 +239,8 @@ function NavegacionPrincipal() {
               {...props}
               publicacionesConLike={publicacionesConLike}
               cambiarLike={cambiarLike}
+              publicacionesGuardadas={publicacionesGuardadas}
+              cambiarGuardado={cambiarGuardado}
             />
           )}
         </Stack.Screen>

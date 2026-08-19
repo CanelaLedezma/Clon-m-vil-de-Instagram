@@ -10,20 +10,16 @@ function Inicio({
   navigation,
   publicacionesConLike,
   cambiarLike,
+  publicacionesGuardadas,
+  cambiarGuardado,
 }) {
-
-  // Guarda las publicaciones que se muestran en el feed
   const [publicaciones, setPublicaciones] = useState([]);
 
-  // Se ejecuta una sola vez cuando se carga la pantalla
+  // Carga las publicaciones desde The Cat API
   useEffect(() => {
-
-    // Pide 10 imágenes de gatos a la API
     axios
       .get('https://api.thecatapi.com/v1/images/search?limit=10')
       .then((respuesta) => {
-
-        // Adapta los datos de la API al formato que usa Publicacion
         const publicacionesApi = respuesta.data.map((gato, indice) => ({
           id: gato.id,
           usuario: `usuario${indice + 1}`,
@@ -34,24 +30,25 @@ function Inicio({
 
         setPublicaciones(publicacionesApi);
       });
-
   }, []);
 
   return (
     <SafeAreaView style={estilos.contenedor}>
 
-      {/* Historias usando las mismas publicaciones del feed */}
       <Historias publicaciones={publicaciones} />
 
-      {/* Lista principal del feed */}
       <FlatList
         style={estilos.lista}
         data={publicaciones}
 
         renderItem={({ item }) => {
-
-          // Comprueba si esta publicación está guardada en Likes
+          // Comprueba si esta publicación tiene like
           const tieneLike = publicacionesConLike.some(
+            (publicacion) => publicacion.id === item.id
+          );
+
+          // Comprueba si esta publicación está guardada
+          const estaGuardada = publicacionesGuardadas.some(
             (publicacion) => publicacion.id === item.id
           );
 
@@ -62,13 +59,12 @@ function Inicio({
               imagen={item.imagen}
               descripcion={item.descripcion}
 
-              // Le informa al componente si tiene like o no
               meGusta={tieneLike}
-
-              // Agrega o elimina esta publicación de Likes
               cambiarLike={() => cambiarLike(item)}
 
-              // Abre el detalle enviando esta publicación
+              guardada={estaGuardada}
+              cambiarGuardado={() => cambiarGuardado(item)}
+
               abrirDetalle={() =>
                 navigation.navigate('DetallePublicacion', {
                   publicacion: item,
@@ -91,7 +87,6 @@ const estilos = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
 
-  // Altura temporal para las pruebas en web
   lista: {
     height: 500,
   },

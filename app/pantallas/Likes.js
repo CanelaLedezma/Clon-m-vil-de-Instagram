@@ -1,17 +1,22 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FlatList, StyleSheet, Text } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+} from 'react-native';
 
 import Publicacion from '../componentes/Publicacion';
 
 function Likes({
   publicacionesConLike,
   cambiarLike,
+  publicacionesGuardadas,
+  cambiarGuardado,
   navigation,
 }) {
   return (
     <SafeAreaView style={estilos.contenedor}>
 
-      {/* Si todavía no hay publicaciones con like */}
       {publicacionesConLike.length === 0 ? (
         <Text style={estilos.mensaje}>
           Todavía no le diste like a ninguna publicación.
@@ -19,31 +24,36 @@ function Likes({
       ) : (
         <FlatList
           style={estilos.lista}
-
-          // Muestra solamente las publicaciones que tienen like
           data={publicacionesConLike}
 
-          renderItem={({ item }) => (
-            <Publicacion
-              usuario={item.usuario}
-              ubicacion={item.ubicacion}
-              imagen={item.imagen}
-              descripcion={item.descripcion}
+          renderItem={({ item }) => {
 
-              // Esta publicación está dentro de Likes
-              meGusta={true}
+            // Comprueba si esta publicación está guardada
+            const estaGuardada = publicacionesGuardadas.some(
+              (publicacion) => publicacion.id === item.id
+            );
 
-              // Permite sacar el like también desde esta pantalla
-              cambiarLike={() => cambiarLike(item)}
+            return (
+              <Publicacion
+                usuario={item.usuario}
+                ubicacion={item.ubicacion}
+                imagen={item.imagen}
+                descripcion={item.descripcion}
 
-              // Abre el detalle de esa misma publicación
-              abrirDetalle={() =>
-                navigation.navigate('DetallePublicacion', {
-                  publicacion: item,
-                })
-              }
-            />
-          )}
+                meGusta={true}
+                cambiarLike={() => cambiarLike(item)}
+
+                guardada={estaGuardada}
+                cambiarGuardado={() => cambiarGuardado(item)}
+
+                abrirDetalle={() =>
+                  navigation.navigate('DetallePublicacion', {
+                    publicacion: item,
+                  })
+                }
+              />
+            );
+          }}
 
           keyExtractor={(item) => item.id}
         />

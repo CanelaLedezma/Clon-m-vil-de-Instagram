@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 // Comentarios simulados
@@ -36,15 +35,19 @@ function DetallePublicacion({
   route,
   publicacionesConLike,
   cambiarLike,
+  publicacionesGuardadas,
+  cambiarGuardado,
 }) {
   // Recibe la publicación seleccionada
   const { publicacion } = route.params;
 
-  // Guarda si la publicación está marcada como guardada
-  const [guardada, setGuardada] = useState(false);
-
   // Comprueba si esta publicación ya tiene like
   const meGusta = publicacionesConLike.some(
+    (item) => item.id === publicacion.id
+  );
+
+  // Comprueba si esta publicación ya está guardada
+  const guardada = publicacionesGuardadas.some(
     (item) => item.id === publicacion.id
   );
 
@@ -126,7 +129,9 @@ function DetallePublicacion({
             </View>
 
             {/* Guardar */}
-            <Pressable onPress={() => setGuardada(!guardada)}>
+            <Pressable
+              onPress={() => cambiarGuardado(publicacion)}
+            >
               <Ionicons
                 name={guardada ? 'bookmark' : 'bookmark-outline'}
                 size={26}
