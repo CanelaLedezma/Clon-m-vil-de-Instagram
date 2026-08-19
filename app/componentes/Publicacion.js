@@ -1,55 +1,72 @@
-import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
-import { useState } from 'react';
+import {View,Text, Image, StyleSheet, Pressable, Alert, Platform,
+} from 'react-native';import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-// Este componente representa una publicación del feed.
-// Recibe por props los datos que cambian en cada publicación.
-function Publicacion({ usuario, ubicacion, imagen, descripcion, abrirDetalle }) {
+function Publicacion({
+  usuario,
+  ubicacion,
+  imagen,
+  descripcion,
+  abrirDetalle,
+}) {
 
-  // Guarda si esta publicación tiene Me gusta o no.
-  // Empieza en false porque al principio el corazón está vacío.
+  // Guarda si la publicación tiene Me gusta
   const [meGusta, setMeGusta] = useState(false);
 
-  // Guarda la cantidad de Me gusta de esta publicación.
+  // Guarda la cantidad de likes
   const [cantidadLikes, setCantidadLikes] = useState(120);
 
-  // Cambia el estado del Me gusta cada vez que se toca el corazón.
-  function cambiarMeGusta() {
+  // Cambia el estado del botón Me gusta
+  const cambiarMeGusta = () => {
+    setMeGusta(!meGusta);
 
-    // Si todavía no tenía Me gusta, suma uno.
-    if (!meGusta) {
+    if (meGusta) {
+      setCantidadLikes(cantidadLikes - 1);
+    } else {
       setCantidadLikes(cantidadLikes + 1);
     }
+  };
 
-    // Si ya tenía Me gusta, resta uno.
-    else {
-      setCantidadLikes(cantidadLikes - 1);
-    }
+const compartirPublicacion = () => {
 
-    // Cambia entre true y false.
-    setMeGusta(!meGusta);
+  // En web usa el alert del navegador
+  if (Platform.OS === 'web') {
+    window.alert('La publicación está lista para compartir.');
+    return;
   }
 
+  // En Android o iOS usa Alert de React Native
+  Alert.alert(
+    'Compartir publicación',
+    'La publicación está lista para compartir.'
+  );
+};
+
   return (
-    // Contenedor principal de toda la publicación
-    <View style={estilos.publicacion}>
+    <View style={estilos.contenedor}>
 
       {/* Encabezado de la publicación */}
       <View style={estilos.encabezado}>
 
-        {/* Muestra el avatar del usuario */}
-        <Image
-          source={{ uri: imagen }}
-          style={estilos.avatar}
-        />
-
-        {/* Agrupa el nombre del usuario y la ubicación */}
         <View style={estilos.datosUsuario}>
-          <Text style={estilos.usuario}>{usuario}</Text>
-          <Text style={estilos.ubicacion}>{ubicacion}</Text>
+
+          <Image
+            source={{ uri: imagen }}
+            style={estilos.avatar}
+          />
+
+          <View>
+            <Text style={estilos.usuario}>
+              {usuario}
+            </Text>
+
+            <Text style={estilos.ubicacion}>
+              {ubicacion}
+            </Text>
+          </View>
+
         </View>
 
-        {/* Muestra el icono de opciones de la publicación */}
         <Ionicons
           name="ellipsis-horizontal"
           size={22}
@@ -58,75 +75,67 @@ function Publicacion({ usuario, ubicacion, imagen, descripcion, abrirDetalle }) 
 
       </View>
 
-      {/* Al tocar la imagen abre la pantalla de detalle */}
+      {/* Imagen principal */}
       <Pressable onPress={abrirDetalle}>
         <Image
           source={{ uri: imagen }}
           style={estilos.imagen}
         />
       </Pressable>
-      
-      {/* Barra que contiene las acciones de la publicación */}
-      <View style={estilos.barraAcciones}>
 
-        {/* Agrupa los botones de Me gusta, comentar y compartir */}
+      {/* Barra de acciones */}
+      <View style={estilos.acciones}>
+
         <View style={estilos.accionesIzquierda}>
 
-          {/* Al tocarlo ejecuta la función cambiarMeGusta */}
-          <Pressable
-            style={estilos.botonAccion}
-            onPress={cambiarMeGusta}
-          >
+          {/* Me gusta */}
+          <Pressable onPress={cambiarMeGusta}>
             <Ionicons
-              // Si meGusta es true muestra el corazón lleno.
-              // Si es false muestra el corazón vacío.
               name={meGusta ? 'heart' : 'heart-outline'}
-              size={28}
-
-              // El corazón lleno se muestra rojo.
+              size={27}
               color={meGusta ? 'red' : 'black'}
             />
           </Pressable>
 
-          {/* Botón visual de comentarios */}
-          <Pressable style={estilos.botonAccion}>
+          {/* Comentar: abre el detalle */}
+          <Pressable onPress={abrirDetalle}>
             <Ionicons
               name="chatbubble-outline"
-              size={27}
+              size={25}
               color="black"
             />
           </Pressable>
 
-          {/* Botón visual de compartir */}
-          <Pressable style={estilos.botonAccion}>
+          {/* Compartir */}
+          <Pressable onPress={compartirPublicacion}>
             <Ionicons
               name="paper-plane-outline"
-              size={27}
+              size={25}
               color="black"
             />
           </Pressable>
 
         </View>
 
-        {/* Botón visual para guardar la publicación */}
-        <Pressable>
-          <Ionicons
-            name="bookmark-outline"
-            size={27}
-            color="black"
-          />
-        </Pressable>
+        {/* Guardar: por ahora visual */}
+        <Ionicons
+          name="bookmark-outline"
+          size={25}
+          color="black"
+        />
 
       </View>
 
-      {/* Muestra la cantidad actual de Me gusta */}
+      {/* Cantidad de likes */}
       <Text style={estilos.likes}>
         {cantidadLikes} Me gusta
       </Text>
 
-      {/* Muestra el nombre del usuario y la descripción */}
+      {/* Descripción */}
       <Text style={estilos.descripcion}>
-        <Text style={estilos.usuario}>{usuario} </Text>
+        <Text style={estilos.usuario}>
+          {usuario}
+        </Text>{' '}
         {descripcion}
       </Text>
 
@@ -134,89 +143,70 @@ function Publicacion({ usuario, ubicacion, imagen, descripcion, abrirDetalle }) 
   );
 }
 
-// Estilos del componente Publicacion
 const estilos = StyleSheet.create({
-  publicacion: {
-    marginBottom: 18,
+  contenedor: {
     backgroundColor: '#ffffff',
+    marginBottom: 18,
   },
 
   encabezado: {
-    // Coloca avatar, datos del usuario e icono uno al lado del otro
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 10,
+  },
+
+  datosUsuario: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 
   avatar: {
     width: 36,
     height: 36,
-
-    // Hace que la imagen tenga forma circular
     borderRadius: 18,
     marginRight: 10,
   },
 
-  datosUsuario: {
-    // Hace que los datos ocupen el espacio disponible
-    // y empuja el icono de opciones hacia la derecha
-    flex: 1,
-  },
-
   usuario: {
     fontWeight: 'bold',
-    fontSize: 14,
   },
 
   ubicacion: {
     fontSize: 12,
-    marginTop: 1,
   },
 
   imagen: {
     width: '100%',
-
-    // Mantiene la proporción cuadrada:
-    // el ancho y el alto quedan iguales
     aspectRatio: 1,
   },
 
-  barraAcciones: {
-    // Coloca las acciones a la izquierda
-    // y el botón guardar a la derecha
+  acciones: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 12,
     paddingTop: 10,
   },
 
   accionesIzquierda: {
-    // Coloca los botones uno al lado del otro
     flexDirection: 'row',
     alignItems: 'center',
-  },
-
-  botonAccion: {
-    // Separa visualmente cada botón
-    marginRight: 14,
+    gap: 15,
   },
 
   likes: {
     fontWeight: 'bold',
-    fontSize: 14,
     paddingHorizontal: 12,
-    marginTop: 8,
+    paddingTop: 8,
   },
 
   descripcion: {
-    fontSize: 14,
     paddingHorizontal: 12,
-    paddingTop: 6,
-    paddingBottom: 4,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
 });
 
-// Permite importar Publicacion desde otros archivos
 export default Publicacion;
