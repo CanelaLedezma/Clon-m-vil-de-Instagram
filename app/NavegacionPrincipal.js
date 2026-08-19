@@ -7,6 +7,7 @@ import { Image } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import Inicio from './pantallas/Inicio';
+import Buscar from './pantallas/Buscar';
 import DetallePublicacion from './pantallas/DetallePublicacion';
 import Perfil from './pantallas/Perfil';
 import Likes from './pantallas/Likes';
@@ -14,38 +15,10 @@ import Likes from './pantallas/Likes';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function PestañasPrincipales() {
-
-  // Guarda las publicaciones del feed a las que se les dio like
-  const [publicacionesConLike, setPublicacionesConLike] = useState([]);
-
-  // Agrega o quita una publicación de la lista de likes
-  const cambiarLike = (publicacion) => {
-
-    // Busca si la publicación ya tiene like
-    const yaTieneLike = publicacionesConLike.some(
-      (item) => item.id === publicacion.id
-    );
-
-    if (yaTieneLike) {
-
-      // Si ya tenía like, la elimina
-      setPublicacionesConLike(
-        publicacionesConLike.filter(
-          (item) => item.id !== publicacion.id
-        )
-      );
-
-    } else {
-
-      // Si no tenía like, la agrega
-      setPublicacionesConLike([
-        ...publicacionesConLike,
-        publicacion,
-      ]);
-    }
-  };
-
+function PestañasPrincipales({
+  publicacionesConLike,
+  cambiarLike,
+}) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -124,7 +97,6 @@ function PestañasPrincipales() {
       })}
     >
 
-      {/* Inicio */}
       <Tab.Screen
         name="Inicio"
         options={{
@@ -141,16 +113,14 @@ function PestañasPrincipales() {
         )}
       </Tab.Screen>
 
-      {/* Buscar: por ahora se conecta en el próximo paso */}
       <Tab.Screen
         name="Buscar"
-        component={Inicio}
+        component={Buscar}
         options={{
           headerShown: false,
         }}
       />
 
-      {/* Crear: por ahora se conecta en el próximo paso */}
       <Tab.Screen
         name="Crear"
         component={Inicio}
@@ -159,7 +129,6 @@ function PestañasPrincipales() {
         }}
       />
 
-      {/* Publicaciones que recibieron like */}
       <Tab.Screen
         name="Likes"
         options={{
@@ -175,7 +144,6 @@ function PestañasPrincipales() {
         )}
       </Tab.Screen>
 
-      {/* Perfil */}
       <Tab.Screen
         name="Perfil"
         component={Perfil}
@@ -186,6 +154,31 @@ function PestañasPrincipales() {
 }
 
 function NavegacionPrincipal() {
+
+  // Estado compartido por Inicio, Likes y Detalle
+  const [publicacionesConLike, setPublicacionesConLike] = useState([]);
+
+  // Agrega o quita una publicación de Likes
+  const cambiarLike = (publicacion) => {
+
+    const yaTieneLike = publicacionesConLike.some(
+      (item) => item.id === publicacion.id
+    );
+
+    if (yaTieneLike) {
+      setPublicacionesConLike(
+        publicacionesConLike.filter(
+          (item) => item.id !== publicacion.id
+        )
+      );
+    } else {
+      setPublicacionesConLike([
+        ...publicacionesConLike,
+        publicacion,
+      ]);
+    }
+  };
+
   return (
     <NavigationContainer>
 
@@ -193,16 +186,30 @@ function NavegacionPrincipal() {
 
         <Stack.Screen
           name="Principal"
-          component={PestañasPrincipales}
           options={{
             headerShown: false,
           }}
-        />
+        >
+          {(props) => (
+            <PestañasPrincipales
+              {...props}
+              publicacionesConLike={publicacionesConLike}
+              cambiarLike={cambiarLike}
+            />
+          )}
+        </Stack.Screen>
 
         <Stack.Screen
           name="DetallePublicacion"
-          component={DetallePublicacion}
-        />
+        >
+          {(props) => (
+            <DetallePublicacion
+              {...props}
+              publicacionesConLike={publicacionesConLike}
+              cambiarLike={cambiarLike}
+            />
+          )}
+        </Stack.Screen>
 
       </Stack.Navigator>
 

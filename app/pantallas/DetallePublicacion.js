@@ -1,9 +1,19 @@
-import { StyleSheet, Text, Image, View, ScrollView, Pressable } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  Image,
+  View,
+  ScrollView,
+  Pressable,
+  Alert,
+  Platform,
+} from 'react-native';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-// Comentarios simulados para mostrar en el detalle
+// Comentarios simulados
 const comentarios = [
   {
     id: '1',
@@ -22,43 +32,42 @@ const comentarios = [
   },
 ];
 
-function DetallePublicacion({ route }) {
-
-  // Recibe la publicación que se envió desde Inicio
+function DetallePublicacion({
+  route,
+  publicacionesConLike,
+  cambiarLike,
+}) {
+  // Recibe la publicación seleccionada
   const { publicacion } = route.params;
 
-  // Guarda si la publicación tiene Me gusta o no
-  const [meGusta, setMeGusta] = useState(false);
+  // Guarda si la publicación está marcada como guardada
+  const [guardada, setGuardada] = useState(false);
 
-  // Guarda la cantidad de Me gusta
-  const [cantidadLikes, setCantidadLikes] = useState(120);
+  // Comprueba si esta publicación ya tiene like
+  const meGusta = publicacionesConLike.some(
+    (item) => item.id === publicacion.id
+  );
 
-  // Cambia el estado del corazón y actualiza la cantidad
-  function cambiarMeGusta() {
-
-    if (!meGusta) {
-      setCantidadLikes(cantidadLikes + 1);
+  // Simula la acción de compartir una publicación
+  const compartirPublicacion = () => {
+    if (Platform.OS === 'web') {
+      window.alert('La publicación está lista para compartir.');
+      return;
     }
 
-    else {
-      setCantidadLikes(cantidadLikes - 1);
-    }
-
-    setMeGusta(!meGusta);
-  }
+    Alert.alert(
+      'Compartir publicación',
+      'La publicación está lista para compartir.'
+    );
+  };
 
   return (
     <SafeAreaView style={estilos.contenedor}>
-
-      {/* Permite recorrer el contenido si supera el alto de la pantalla */}
       <ScrollView>
-
-        {/* Limita el ancho para que en web se vea parecido a una pantalla móvil */}
         <View style={estilos.contenido}>
 
-          {/* Encabezado con avatar, usuario y ubicación */}
+          {/* Encabezado */}
           <View style={estilos.encabezado}>
-
             <Image
               source={{ uri: publicacion.imagen }}
               style={estilos.avatar}
@@ -73,10 +82,9 @@ function DetallePublicacion({ route }) {
                 {publicacion.ubicacion}
               </Text>
             </View>
-
           </View>
 
-          {/* Imagen de la publicación seleccionada */}
+          {/* Imagen principal */}
           <Image
             source={{ uri: publicacion.imagen }}
             style={estilos.imagen}
@@ -84,27 +92,55 @@ function DetallePublicacion({ route }) {
 
           {/* Barra de acciones */}
           <View style={estilos.barraAcciones}>
+            <View style={estilos.accionesIzquierda}>
 
-            {/* Al tocar el corazón cambia el estado del Me gusta */}
-            <Pressable onPress={cambiarMeGusta}>
+              {/* Me gusta */}
+              <Pressable
+                onPress={() => cambiarLike(publicacion)}
+              >
+                <Ionicons
+                  name={meGusta ? 'heart' : 'heart-outline'}
+                  size={28}
+                  color={meGusta ? 'red' : 'black'}
+                />
+              </Pressable>
+
+              {/* Comentar */}
+              <Pressable>
+                <Ionicons
+                  name="chatbubble-outline"
+                  size={26}
+                  color="black"
+                />
+              </Pressable>
+
+              {/* Compartir */}
+              <Pressable onPress={compartirPublicacion}>
+                <Ionicons
+                  name="paper-plane-outline"
+                  size={26}
+                  color="black"
+                />
+              </Pressable>
+
+            </View>
+
+            {/* Guardar */}
+            <Pressable onPress={() => setGuardada(!guardada)}>
               <Ionicons
-                // Muestra corazón lleno o vacío según el estado
-                name={meGusta ? 'heart' : 'heart-outline'}
-                size={28}
-
-                // El corazón lleno se muestra rojo
-                color={meGusta ? 'red' : 'black'}
+                name={guardada ? 'bookmark' : 'bookmark-outline'}
+                size={26}
+                color="black"
               />
             </Pressable>
-
           </View>
 
-          {/* Muestra la cantidad actual de Me gusta */}
+          {/* Cantidad de Me gusta */}
           <Text style={estilos.likes}>
-            {cantidadLikes} Me gusta
+            {meGusta ? 121 : 120} Me gusta
           </Text>
 
-          {/* Usuario y descripción */}
+          {/* Descripción */}
           <Text style={estilos.descripcion}>
             <Text style={estilos.usuario}>
               {publicacion.usuario}{' '}
@@ -118,12 +154,11 @@ function DetallePublicacion({ route }) {
             #gatos #mascotas #cat
           </Text>
 
-          {/* Título de la sección de comentarios */}
+          {/* Comentarios */}
           <Text style={estilos.tituloComentarios}>
             Comentarios
           </Text>
 
-          {/* Recorre los comentarios y muestra cada uno */}
           {comentarios.map((comentario) => (
             <Text
               key={comentario.id}
@@ -138,9 +173,7 @@ function DetallePublicacion({ route }) {
           ))}
 
         </View>
-
       </ScrollView>
-
     </SafeAreaView>
   );
 }
@@ -153,16 +186,11 @@ const estilos = StyleSheet.create({
 
   contenido: {
     width: '100%',
-
-    // Evita que el detalle se estire demasiado en web
     maxWidth: 430,
-
-    // Centra el contenido en pantallas grandes
     alignSelf: 'center',
   },
 
   encabezado: {
-    // Coloca avatar y datos del usuario uno al lado del otro
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
@@ -171,8 +199,6 @@ const estilos = StyleSheet.create({
   avatar: {
     width: 40,
     height: 40,
-
-    // Hace que el avatar sea circular
     borderRadius: 20,
     marginRight: 10,
   },
@@ -188,14 +214,21 @@ const estilos = StyleSheet.create({
 
   imagen: {
     width: '100%',
-
-    // Mantiene la imagen cuadrada
     aspectRatio: 1,
   },
 
   barraAcciones: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 12,
     paddingTop: 10,
+  },
+
+  accionesIzquierda: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 15,
   },
 
   likes: {

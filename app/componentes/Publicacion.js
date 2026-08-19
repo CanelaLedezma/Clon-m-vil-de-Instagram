@@ -1,4 +1,12 @@
-import {View, Text, Image, StyleSheet, Pressable, Alert, Platform,} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Pressable,
+  Alert,
+  Platform,
+} from 'react-native';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -10,18 +18,18 @@ function Publicacion({
   abrirDetalle,
   meGusta,
   cambiarLike,
+  guardada,
+  cambiarGuardado,
 }) {
 
   // Simula la acción de compartir una publicación
   const compartirPublicacion = () => {
 
-    // En web usa el alert del navegador
     if (Platform.OS === 'web') {
       window.alert('La publicación está lista para compartir.');
       return;
     }
 
-    // En Android o iOS usa Alert de React Native
     Alert.alert(
       'Compartir publicación',
       'La publicación está lista para compartir.'
@@ -103,12 +111,14 @@ function Publicacion({
 
         </View>
 
-        {/* Guardar: por ahora visual */}
-        <Ionicons
-          name="bookmark-outline"
-          size={25}
-          color="black"
-        />
+        {/* Guardar */}
+        <Pressable onPress={cambiarGuardado}>
+          <Ionicons
+            name={guardada ? 'bookmark' : 'bookmark-outline'}
+            size={25}
+            color="black"
+          />
+        </Pressable>
 
       </View>
 
