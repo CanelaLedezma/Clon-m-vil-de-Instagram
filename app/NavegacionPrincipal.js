@@ -1,104 +1,181 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View } from 'react-native';
+import { useState } from 'react';
+import { Image } from 'react-native';
+
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import Inicio from './pantallas/Inicio';
 import DetallePublicacion from './pantallas/DetallePublicacion';
 import Perfil from './pantallas/Perfil';
+import Likes from './pantallas/Likes';
 
-// Stack: se usa para entrar a pantallas más profundas,
-// como el detalle de una publicación.
 const Stack = createStackNavigator();
-
-// Tabs: se usa para las secciones principales,
-// como Inicio y Perfil.
 const Tab = createBottomTabNavigator();
 
-// Navegación inferior principal de la aplicación
 function PestañasPrincipales() {
+
+  // Guarda las publicaciones del feed a las que se les dio like
+  const [publicacionesConLike, setPublicacionesConLike] = useState([]);
+
+  // Agrega o quita una publicación de la lista de likes
+  const cambiarLike = (publicacion) => {
+
+    // Busca si la publicación ya tiene like
+    const yaTieneLike = publicacionesConLike.some(
+      (item) => item.id === publicacion.id
+    );
+
+    if (yaTieneLike) {
+
+      // Si ya tenía like, la elimina
+      setPublicacionesConLike(
+        publicacionesConLike.filter(
+          (item) => item.id !== publicacion.id
+        )
+      );
+
+    } else {
+
+      // Si no tenía like, la agrega
+      setPublicacionesConLike([
+        ...publicacionesConLike,
+        publicacion,
+      ]);
+    }
+  };
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        // Define el icono que aparece en cada pestaña
-        tabBarIcon: ({ color, size }) => {
-          let nombreIcono;
+        tabBarIcon: ({ focused, color, size }) => {
 
           if (route.name === 'Inicio') {
-            nombreIcono = 'home-outline';
+            return (
+              <Ionicons
+                name={focused ? 'home' : 'home-outline'}
+                size={size}
+                color={color}
+              />
+            );
+          }
+
+          if (route.name === 'Buscar') {
+            return (
+              <Ionicons
+                name="search-outline"
+                size={size}
+                color={color}
+              />
+            );
+          }
+
+          if (route.name === 'Crear') {
+            return (
+              <Ionicons
+                name="add-circle-outline"
+                size={size}
+                color={color}
+              />
+            );
+          }
+
+          if (route.name === 'Likes') {
+            return (
+              <Ionicons
+                name={focused ? 'heart' : 'heart-outline'}
+                size={size}
+                color={color}
+              />
+            );
           }
 
           if (route.name === 'Perfil') {
-            nombreIcono = 'person-circle-outline';
+            return (
+              <Image
+                source={{
+                  uri: 'https://placecats.com/100/100',
+                }}
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: 12,
+                  borderWidth: focused ? 1 : 0,
+                  borderColor: 'black',
+                }}
+              />
+            );
           }
-
-          return (
-            <Ionicons
-              name={nombreIcono}
-              size={size}
-              color={color}
-            />
-          );
         },
 
-        // Colores de la barra inferior
         tabBarActiveTintColor: 'black',
-        tabBarInactiveTintColor: 'gray',
-
-        // Oculta el texto para que quede más parecido a Instagram
+        tabBarInactiveTintColor: 'black',
         tabBarShowLabel: false,
+
+        tabBarStyle: {
+          height: 55,
+          paddingTop: 6,
+          paddingBottom: 6,
+          borderTopWidth: 1,
+          borderTopColor: '#dbdbdb',
+          backgroundColor: '#ffffff',
+        },
       })}
     >
 
-      {/* Sección principal del feed */}
+      {/* Inicio */}
       <Tab.Screen
         name="Inicio"
+        options={{
+          headerTitle: 'Instagram',
+          headerTitleAlign: 'center',
+        }}
+      >
+        {(props) => (
+          <Inicio
+            {...props}
+            publicacionesConLike={publicacionesConLike}
+            cambiarLike={cambiarLike}
+          />
+        )}
+      </Tab.Screen>
+
+      {/* Buscar: por ahora se conecta en el próximo paso */}
+      <Tab.Screen
+        name="Buscar"
         component={Inicio}
         options={{
-          // Muestra Instagram en el centro del header
-          headerTitle: 'Instagram',
-
-          // Centra el título
-          headerTitleAlign: 'center',
-
-          // Cámara a la izquierda, como en la referencia
-          headerLeft: () => (
-            <Ionicons
-              name="camera-outline"
-              size={27}
-              color="black"
-              style={{ marginLeft: 15 }}
-            />
-          ),
-
-          // Iconos de la derecha
-          headerRight: () => (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginRight: 15,
-              }}
-            >
-              <Ionicons
-                name="tv-outline"
-                size={25}
-                color="black"
-                style={{ marginRight: 18 }}
-              />
-
-              <Ionicons
-                name="paper-plane-outline"
-                size={25}
-                color="black"
-              />
-            </View>
-          ),
+          headerShown: false,
         }}
       />
 
-      {/* Sección principal del perfil */}
+      {/* Crear: por ahora se conecta en el próximo paso */}
+      <Tab.Screen
+        name="Crear"
+        component={Inicio}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      {/* Publicaciones que recibieron like */}
+      <Tab.Screen
+        name="Likes"
+        options={{
+          headerTitle: 'Me gusta',
+        }}
+      >
+        {(props) => (
+          <Likes
+            {...props}
+            publicacionesConLike={publicacionesConLike}
+            cambiarLike={cambiarLike}
+          />
+        )}
+      </Tab.Screen>
+
+      {/* Perfil */}
       <Tab.Screen
         name="Perfil"
         component={Perfil}
@@ -110,12 +187,10 @@ function PestañasPrincipales() {
 
 function NavegacionPrincipal() {
   return (
-    // Envuelve toda la navegación de la aplicación
     <NavigationContainer>
 
       <Stack.Navigator>
 
-        {/* Contiene las pestañas principales de Inicio y Perfil */}
         <Stack.Screen
           name="Principal"
           component={PestañasPrincipales}
@@ -124,7 +199,6 @@ function NavegacionPrincipal() {
           }}
         />
 
-        {/* El detalle queda fuera de las Tabs porque es una pantalla interna */}
         <Stack.Screen
           name="DetallePublicacion"
           component={DetallePublicacion}
@@ -136,5 +210,4 @@ function NavegacionPrincipal() {
   );
 }
 
-// Permite importar este componente desde App.js
 export default NavegacionPrincipal;

@@ -1,5 +1,5 @@
-import {View,Text, Image, StyleSheet, Pressable, Alert, Platform,
-} from 'react-native';import { useState } from 'react';
+import {View, Text, Image, StyleSheet, Pressable, Alert, Platform,} from 'react-native';
+
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 function Publicacion({
@@ -8,39 +8,25 @@ function Publicacion({
   imagen,
   descripcion,
   abrirDetalle,
+  meGusta,
+  cambiarLike,
 }) {
 
-  // Guarda si la publicación tiene Me gusta
-  const [meGusta, setMeGusta] = useState(false);
+  // Simula la acción de compartir una publicación
+  const compartirPublicacion = () => {
 
-  // Guarda la cantidad de likes
-  const [cantidadLikes, setCantidadLikes] = useState(120);
-
-  // Cambia el estado del botón Me gusta
-  const cambiarMeGusta = () => {
-    setMeGusta(!meGusta);
-
-    if (meGusta) {
-      setCantidadLikes(cantidadLikes - 1);
-    } else {
-      setCantidadLikes(cantidadLikes + 1);
+    // En web usa el alert del navegador
+    if (Platform.OS === 'web') {
+      window.alert('La publicación está lista para compartir.');
+      return;
     }
+
+    // En Android o iOS usa Alert de React Native
+    Alert.alert(
+      'Compartir publicación',
+      'La publicación está lista para compartir.'
+    );
   };
-
-const compartirPublicacion = () => {
-
-  // En web usa el alert del navegador
-  if (Platform.OS === 'web') {
-    window.alert('La publicación está lista para compartir.');
-    return;
-  }
-
-  // En Android o iOS usa Alert de React Native
-  Alert.alert(
-    'Compartir publicación',
-    'La publicación está lista para compartir.'
-  );
-};
 
   return (
     <View style={estilos.contenedor}>
@@ -89,7 +75,7 @@ const compartirPublicacion = () => {
         <View style={estilos.accionesIzquierda}>
 
           {/* Me gusta */}
-          <Pressable onPress={cambiarMeGusta}>
+          <Pressable onPress={cambiarLike}>
             <Ionicons
               name={meGusta ? 'heart' : 'heart-outline'}
               size={27}
@@ -97,7 +83,7 @@ const compartirPublicacion = () => {
             />
           </Pressable>
 
-          {/* Comentar: abre el detalle */}
+          {/* Comentar */}
           <Pressable onPress={abrirDetalle}>
             <Ionicons
               name="chatbubble-outline"
@@ -128,7 +114,7 @@ const compartirPublicacion = () => {
 
       {/* Cantidad de likes */}
       <Text style={estilos.likes}>
-        {cantidadLikes} Me gusta
+        {meGusta ? 121 : 120} Me gusta
       </Text>
 
       {/* Descripción */}

@@ -6,9 +6,13 @@ import axios from 'axios';
 import Historias from '../componentes/Historias';
 import Publicacion from '../componentes/Publicacion';
 
-function Inicio({ navigation }) {
+function Inicio({
+  navigation,
+  publicacionesConLike,
+  cambiarLike,
+}) {
 
-  // Guarda las publicaciones que se van a mostrar en el feed
+  // Guarda las publicaciones que se muestran en el feed
   const [publicaciones, setPublicaciones] = useState([]);
 
   // Se ejecuta una sola vez cuando se carga la pantalla
@@ -28,7 +32,6 @@ function Inicio({ navigation }) {
           descripcion: `Publicación ${indice + 1}`,
         }));
 
-        // Guarda las publicaciones para que FlatList las muestre
         setPublicaciones(publicacionesApi);
       });
 
@@ -37,34 +40,44 @@ function Inicio({ navigation }) {
   return (
     <SafeAreaView style={estilos.contenedor}>
 
-      {/* Historias usando las mismas publicaciones cargadas desde la API */}
+      {/* Historias usando las mismas publicaciones del feed */}
       <Historias publicaciones={publicaciones} />
 
-      {/* Lista de publicaciones del feed */}
+      {/* Lista principal del feed */}
       <FlatList
         style={estilos.lista}
-
-        // Lista de datos que va a recorrer
         data={publicaciones}
 
-        // Define qué se muestra por cada publicación
-        renderItem={({ item }) => (
-          <Publicacion
-            usuario={item.usuario}
-            ubicacion={item.ubicacion}
-            imagen={item.imagen}
-            descripcion={item.descripcion}
+        renderItem={({ item }) => {
 
-            // Abre el detalle enviando los datos de esta publicación
-            abrirDetalle={() =>
-              navigation.navigate('DetallePublicacion', {
-                publicacion: item,
-              })
-            }
-          />
-        )}
+          // Comprueba si esta publicación está guardada en Likes
+          const tieneLike = publicacionesConLike.some(
+            (publicacion) => publicacion.id === item.id
+          );
 
-        // Usa el id para identificar cada publicación
+          return (
+            <Publicacion
+              usuario={item.usuario}
+              ubicacion={item.ubicacion}
+              imagen={item.imagen}
+              descripcion={item.descripcion}
+
+              // Le informa al componente si tiene like o no
+              meGusta={tieneLike}
+
+              // Agrega o elimina esta publicación de Likes
+              cambiarLike={() => cambiarLike(item)}
+
+              // Abre el detalle enviando esta publicación
+              abrirDetalle={() =>
+                navigation.navigate('DetallePublicacion', {
+                  publicacion: item,
+                })
+              }
+            />
+          );
+        }}
+
         keyExtractor={(item) => item.id}
       />
 
@@ -78,7 +91,7 @@ const estilos = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
 
-  // Altura temporal para poder probar el scroll desde la versión web
+  // Altura temporal para las pruebas en web
   lista: {
     height: 500,
   },
