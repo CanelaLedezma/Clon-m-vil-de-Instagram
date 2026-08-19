@@ -3,7 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useState } from 'react';
 import { Image } from 'react-native';
-
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import Inicio from './pantallas/Inicio';
@@ -124,15 +123,20 @@ function PestañasPrincipales({
           headerShown: false,
         }}
       />
-
-      <Tab.Screen
-        name="Crear"
-        component={Inicio}
-        options={{
-          headerShown: false,
-        }}
-      />
-
+<Tab.Screen
+  name="Crear"
+  component={Inicio}
+  options={{
+    headerShown: false,
+  }}
+  listeners={{
+    tabPress: (evento) => {
+      // Evita que el botón Crear abra una pantalla al tocarlo.
+      // El ícono se mantiene solo para respetar el diseño visual de Instagram.
+      evento.preventDefault();
+    },
+  }}
+/>
       <Tab.Screen
         name="Likes"
         options={{
