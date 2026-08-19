@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useState } from 'react';
-import { Image } from 'react-native';
+import { Image, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import Inicio from './pantallas/Inicio';
@@ -98,13 +98,48 @@ function PestañasPrincipales({
       })}
     >
 
-      <Tab.Screen
-        name="Inicio"
-        options={{
-          headerTitle: 'Instagram',
-          headerTitleAlign: 'center',
+  <Tab.Screen
+  name="Inicio"
+  options={{
+    // Mantiene el nombre de Instagram en el centro
+    headerTitle: 'Instagram',
+    headerTitleAlign: 'center',
+
+    // Cámara a la izquierda, como en la referencia visual
+    headerLeft: () => (
+      <Ionicons
+        name="camera-outline"
+        size={26}
+        color="black"
+        style={{ marginLeft: 15 }}
+      />
+    ),
+
+    // Acciones visuales de la derecha
+    headerRight: () => (
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 16,
+          marginRight: 15,
         }}
       >
+        <Ionicons
+          name="tv-outline"
+          size={25}
+          color="black"
+        />
+
+        <Ionicons
+          name="paper-plane-outline"
+          size={25}
+          color="black"
+        />
+      </View>
+    ),
+  }}
+>
         {(props) => (
           <Inicio
             {...props}
