@@ -2,9 +2,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet, FlatList } from 'react-native';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+
 import Historias from '../componentes/Historias';
-
-
 import Publicacion from '../componentes/Publicacion';
 
 function Inicio({ navigation }) {
@@ -38,6 +37,8 @@ function Inicio({ navigation }) {
   return (
     <SafeAreaView style={estilos.contenedor}>
 
+      {/* Historias usando las mismas publicaciones cargadas desde la API */}
+      <Historias publicaciones={publicaciones} />
 
       {/* Lista de publicaciones del feed */}
       <FlatList
@@ -81,7 +82,6 @@ const estilos = StyleSheet.create({
   lista: {
     height: 500,
   },
-
 });
 
 export default Inicio;

@@ -1,8 +1,9 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { View } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 import Inicio from './pantallas/Inicio';
 import DetallePublicacion from './pantallas/DetallePublicacion';
 import Perfil from './pantallas/Perfil';
@@ -49,32 +50,53 @@ function PestañasPrincipales() {
         tabBarShowLabel: false,
       })}
     >
- <Tab.Screen
-  name="Inicio"
-  component={Inicio}
-  options={{
-    // Cambia el título del header nativo
-    headerTitle: 'Instagram',
 
-    // Coloca iconos a la derecha del header
-    headerRight: () => (
-      <View style={{ flexDirection: 'row', marginRight: 15 }}>
-        <Ionicons
-          name="heart-outline"
-          size={26}
-          color="black"
-          style={{ marginRight: 18 }}
-        />
+      {/* Sección principal del feed */}
+      <Tab.Screen
+        name="Inicio"
+        component={Inicio}
+        options={{
+          // Muestra Instagram en el centro del header
+          headerTitle: 'Instagram',
 
-        <Ionicons
-          name="paper-plane-outline"
-          size={25}
-          color="black"
-        />
-      </View>
-    ),
-  }}
-/>
+          // Centra el título
+          headerTitleAlign: 'center',
+
+          // Cámara a la izquierda, como en la referencia
+          headerLeft: () => (
+            <Ionicons
+              name="camera-outline"
+              size={27}
+              color="black"
+              style={{ marginLeft: 15 }}
+            />
+          ),
+
+          // Iconos de la derecha
+          headerRight: () => (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginRight: 15,
+              }}
+            >
+              <Ionicons
+                name="tv-outline"
+                size={25}
+                color="black"
+                style={{ marginRight: 18 }}
+              />
+
+              <Ionicons
+                name="paper-plane-outline"
+                size={25}
+                color="black"
+              />
+            </View>
+          ),
+        }}
+      />
 
       {/* Sección principal del perfil */}
       <Tab.Screen
