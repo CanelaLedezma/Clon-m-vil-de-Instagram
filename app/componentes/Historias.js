@@ -45,7 +45,9 @@ function Historias({ publicaciones }) {
   );
 }
 
+// En React Native no CSS tradicional. StyleSheet para estilos en JS
 const estilos = StyleSheet.create({
+
   contenedor: {
     borderBottomWidth: 1,
     borderBottomColor: '#dddddd',
@@ -73,6 +75,7 @@ const estilos = StyleSheet.create({
     borderRadius: 30,
   },
 
+  // Estilo del nombre que aparece debajo de cada historia
   nombre: {
     width: 72,
     marginTop: 5,
