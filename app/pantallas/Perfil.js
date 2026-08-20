@@ -113,17 +113,21 @@ function Perfil({ navigation }) {
               style={estilos.celda}
 
               // Abre DetallePublicacion y envía los datos de esta imagen
-              onPress={() =>
-                navigation.navigate('DetallePublicacion', {
-                  publicacion: {
-                    id: item.id,
-                    usuario: 'canela',
-                    ubicacion: 'Buenos Aires',
-                    imagen: item.url,
-                    descripcion: `Publicación ${index + 1} de mi perfil`,
-                  },
-                })
-              }
+             onPress={() =>
+  navigation.navigate('DetallePublicacion', {
+    publicacion: {
+      id: item.id,
+      usuario: 'canela',
+      ubicacion: 'Buenos Aires',
+
+      // Mantiene la misma foto de perfil de Canela
+      avatar: 'https://placecats.com/200/200',
+
+      imagen: item.url,
+      descripcion: `Publicación ${index + 1} de mi perfil`,
+    },
+  })
+}
             >
 
               <Image

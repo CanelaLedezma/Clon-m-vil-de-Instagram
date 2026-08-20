@@ -24,6 +24,10 @@ function Inicio({
           id: gato.id,
           usuario: `usuario${indice + 1}`,
           ubicacion: 'Buenos Aires',
+
+          // Cada usuario tiene su propia foto de perfil
+          avatar: `https://placecats.com/${100 + indice}/${100 + indice}`,
+
           imagen: gato.url,
           descripcion: `Publicación ${indice + 1}`,
         }));
@@ -35,7 +39,10 @@ function Inicio({
   return (
     <SafeAreaView style={estilos.contenedor}>
 
-      <Historias publicaciones={publicaciones} />
+      <Historias
+        publicaciones={publicaciones}
+        navigation={navigation}
+      />
 
       <FlatList
         style={estilos.lista}
@@ -56,6 +63,7 @@ function Inicio({
             <Publicacion
               usuario={item.usuario}
               ubicacion={item.ubicacion}
+              avatar={item.avatar}
               imagen={item.imagen}
               descripcion={item.descripcion}
 

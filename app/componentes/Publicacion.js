@@ -13,6 +13,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 function Publicacion({
   usuario,
   ubicacion,
+  avatar,
   imagen,
   descripcion,
   abrirDetalle,
@@ -24,7 +25,6 @@ function Publicacion({
 
   // Simula la acción de compartir una publicación
   const compartirPublicacion = () => {
-
     if (Platform.OS === 'web') {
       window.alert('La publicación está lista para compartir.');
       return;
@@ -44,8 +44,9 @@ function Publicacion({
 
         <View style={estilos.datosUsuario}>
 
+          {/* Foto de perfil del usuario */}
           <Image
-            source={{ uri: imagen }}
+            source={{ uri: avatar }}
             style={estilos.avatar}
           />
 

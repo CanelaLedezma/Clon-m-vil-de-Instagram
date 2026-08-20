@@ -41,17 +41,22 @@ function DetallePublicacion({
   // Recibe la publicación seleccionada
   const { publicacion } = route.params;
 
-  // Comprueba si esta publicación ya tiene like
+  // Comprueba si esta publicación tiene Me gusta
   const meGusta = publicacionesConLike.some(
     (item) => item.id === publicacion.id
   );
 
-  // Comprueba si esta publicación ya está guardada
+  // Comprueba si esta publicación está guardada
   const guardada = publicacionesGuardadas.some(
     (item) => item.id === publicacion.id
   );
 
-  // Simula la acción de compartir una publicación
+  // Si la publicación tiene un avatar propio lo usa.
+  // Si no, muestra una foto de perfil fija.
+  const fotoPerfil =
+    publicacion.avatar || 'https://placecats.com/100/100';
+
+  // Simula la acción de compartir
   const compartirPublicacion = () => {
     if (Platform.OS === 'web') {
       window.alert('La publicación está lista para compartir.');
@@ -69,10 +74,10 @@ function DetallePublicacion({
       <ScrollView>
         <View style={estilos.contenido}>
 
-          {/* Encabezado */}
+          {/* Encabezado de la publicación */}
           <View style={estilos.encabezado}>
             <Image
-              source={{ uri: publicacion.imagen }}
+              source={{ uri: fotoPerfil }}
               style={estilos.avatar}
             />
 
@@ -87,7 +92,7 @@ function DetallePublicacion({
             </View>
           </View>
 
-          {/* Imagen principal */}
+          {/* Imagen principal de la publicación */}
           <Image
             source={{ uri: publicacion.imagen }}
             style={estilos.imagen}
@@ -95,6 +100,7 @@ function DetallePublicacion({
 
           {/* Barra de acciones */}
           <View style={estilos.barraAcciones}>
+
             <View style={estilos.accionesIzquierda}>
 
               {/* Me gusta */}
@@ -138,9 +144,10 @@ function DetallePublicacion({
                 color="black"
               />
             </Pressable>
+
           </View>
 
-          {/* Cantidad de Me gusta */}
+          {/* Cantidad de likes */}
           <Text style={estilos.likes}>
             {meGusta ? 121 : 120} Me gusta
           </Text>

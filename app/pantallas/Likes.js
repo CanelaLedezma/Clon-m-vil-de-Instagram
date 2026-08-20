@@ -37,6 +37,10 @@ function Likes({
               <Publicacion
                 usuario={item.usuario}
                 ubicacion={item.ubicacion}
+
+                // Mantiene la misma foto de perfil del usuario
+                avatar={item.avatar}
+
                 imagen={item.imagen}
                 descripcion={item.descripcion}
 
