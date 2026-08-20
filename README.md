@@ -2,6 +2,8 @@
 
 Proyecto realizado con React Native y Expo. La aplicación simula algunas de las funciones principales de Instagram en formato móvil, utilizando navegación con React Navigation, consumo de una API externa con Axios y componentes reutilizables.
 
+Link del Figma en el que me base: https://www.figma.com/design/syAvCHlRdVmJR2Dh7irzNy/Instagram-UI-Screens--Community-?node-id=0-2&p=f 
+
 ## Estructura principal del proyecto
 
 ```text
